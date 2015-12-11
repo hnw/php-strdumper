@@ -1,9 +1,16 @@
+sudo: false
+
 language: php
 
 php:
   - 5.4
   - 5.5
   - 5.6
+  - 7.0
+
+matrix:
+  allow_failures:
+    - php: 7.0
 
 env:
   - REPORT_EXIT_STATUS=1 NO_INTERACTION=1 TESTS="--show-all"

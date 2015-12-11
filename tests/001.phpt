@@ -4,7 +4,9 @@ Check for str_dump()
 <?php if (!extension_loaded("strdumper")) print "skip"; ?>
 --FILE--
 <?php
-$str = "foo";
-str_dump($str);
+$foo = "interned";
+$bar = $foo;
+str_dump($foo);
+str_dump($bar);
 --EXPECTREGEX--
-string\(3\) "foo"\(0x[0-9a-f]+\) refcount\(2\) interned
+(string\(8\) "interned"\(0x[0-9a-f]+\) refcount\(\d+\) interned)\n\1

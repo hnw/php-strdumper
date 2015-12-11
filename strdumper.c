@@ -30,6 +30,25 @@
 /* True global resources - no need for thread safety here */
 static int le_strdumper;
 
+#define Z_IS_INTERNED_STR_P(zp) z_is_interned_str_p(zp)
+
+static inline int z_is_interned_str_p(zval *zp)
+{
+	if (Z_TYPE_P(zp) != IS_STRING) {
+		return 0;
+	}
+#if PHP_VERSION_ID >= 70000
+	if (!ZSTR_IS_INTERNED(Z_STR_P(zp))) {
+		return 0;
+	}
+#else
+	if (!IS_INTERNED(Z_STRVAL_P(zp))) {
+		return 0;
+	}
+#endif
+	return 1;
+}
+
 /* {{{ proto void str_dump(mixed var) */
 PHP_FUNCTION(str_dump)
 {
@@ -43,8 +62,13 @@ PHP_FUNCTION(str_dump)
 	}
 	php_printf("string(%d) \"", Z_STRLEN_P(var));
 	PHPWRITE(Z_STRVAL_P(var), Z_STRLEN_P(var));
-	php_printf("\"(%p) refcount(%u)", Z_STRVAL_P(var), Z_REFCOUNT_P(var));
-	if (IS_INTERNED(Z_STRVAL_P(var))) {
+	php_printf("\"(%p) ", Z_STRVAL_P(var));
+#if PHP_VERSION_ID >= 70000
+	php_printf("refcount(%u)", Z_REFCOUNTED_P(var) ? Z_REFCOUNT_P(var) : 1);
+#else
+	php_printf("refcount(%u)", Z_REFCOUNT_P(var));
+#endif
+	if (Z_IS_INTERNED_STR_P(var)) {
 		php_printf(" interned");
 	}
 	php_printf("\n");
@@ -59,16 +83,24 @@ PHP_FUNCTION(is_interned)
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "z", &var) == FAILURE) {
 		RETURN_FALSE;
 	}
-	if (Z_TYPE_P(var) != IS_STRING || !IS_INTERNED(Z_STRVAL_P(var))) {
-		RETURN_FALSE;
+	if (Z_IS_INTERNED_STR_P(var)) {
+		RETURN_TRUE;
 	}
-	RETURN_TRUE;
+	RETURN_FALSE;
 }
 /* }}} */
 
 /* {{{ proto array interned_strings() */
 PHP_FUNCTION(interned_strings)
 {
+#if PHP_VERSION_ID >= 70000
+	zend_string *entry;
+
+	array_init(return_value);
+	ZEND_HASH_FOREACH_STR_KEY(&CG(interned_strings), entry) {
+		add_next_index_str(return_value, entry);
+	} ZEND_HASH_FOREACH_END();
+#else
 	Bucket *p;
 
 	array_init(return_value);
@@ -78,6 +110,7 @@ PHP_FUNCTION(interned_strings)
 		add_next_index_stringl(return_value, p->arKey, p->nKeyLength-1, 0);
 		p = p->pListNext;
 	}
+#endif
 }
 /* }}} */
 

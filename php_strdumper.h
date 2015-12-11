@@ -38,10 +38,17 @@ extern zend_module_entry strdumper_module_entry;
 #include "TSRM.h"
 #endif
 
-#ifdef ZTS
-#define STRDUMPER_G(v) TSRMG(strdumper_globals_id, zend_strdumper_globals *, v)
+#if PHP_VERSION_ID >= 70000
+#  define STRDUMPER_G(v) ZEND_MODULE_GLOBALS_ACCESSOR(strdumper, v)
+#  if defined(ZTS) && defined(COMPILE_DL_STRDUMPER)
+     ZEND_TSRMLS_CACHE_EXTERN();
+#  endif
 #else
-#define STRDUMPER_G(v) (strdumper_globals.v)
+#  ifdef ZTS
+#    define STRDUMPER_G(v) TSRMG(strdumper_globals_id, zend_strdumper_globals *, v)
+#  else
+#    define STRDUMPER_G(v) (strdumper_globals.v)
+#  endif
 #endif
 
 #endif	/* PHP_STRDUMPER_H */

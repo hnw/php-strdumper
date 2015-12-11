@@ -75,3 +75,9 @@ Makefile.in
 /ltmain.sh
 /mkinstalldirs
 /run-tests.php
+/tests/*.diff
+/tests/*.exp
+/tests/*.log
+/tests/*.php
+/tests/*.sh
+/tmp-php.ini
