@@ -1,0 +1,77 @@
+### https://raw.github.com/github/gitignore/5c11cc04f05ab9a1d124525faa8648a9b6c8dc64/c.gitignore
+
+# Object files
+*.o
+*.ko
+*.obj
+*.elf
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Libraries
+*.lib
+*.a
+*.la
+*.lo
+
+# Shared objects (inc. Windows DLLs)
+*.dll
+*.so
+*.so.*
+*.dylib
+
+# Executables
+*.exe
+*.out
+*.app
+*.i*86
+*.x86_64
+*.hex
+
+# Debug files
+*.dSYM/
+
+
+### https://raw.github.com/github/gitignore/5c11cc04f05ab9a1d124525faa8648a9b6c8dc64/autotools.gitignore
+
+# http://www.gnu.org/software/automake
+
+Makefile.in
+
+# http://www.gnu.org/software/autoconf
+
+/autom4te.cache
+/autoscan.log
+/autoscan-*.log
+/aclocal.m4
+/compile
+/config.h.in
+/configure
+/configure.scan
+/depcomp
+/install-sh
+/missing
+/stamp-h1
+
+
+/.deps
+/.libs/
+/Makefile
+/Makefile.fragments
+/Makefile.global
+/Makefile.objects
+/acinclude.m4
+/build/
+/config.guess
+/config.h
+/config.log
+/config.nice
+/config.status
+/config.sub
+/configure.in
+/libtool
+/ltmain.sh
+/mkinstalldirs
+/run-tests.php
